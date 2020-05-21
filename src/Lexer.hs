@@ -47,6 +47,3 @@ token =  (double >>= \d -> return (ConstD_T d))
 
 tokens :: Parser [Token]
 tokens = P.many token
-
-tokenizeExpr :: String -> [Token]
-tokenizeExpr s = P.parse s tokens

@@ -2,8 +2,8 @@ module Evaluator where
 
 import Grammar
 import Data.Fixed (mod')
-import Lexer (tokenizeExpr)
-import Parser (parseExpr)
+import Parser (expression)
+import ParserLib (parse)
 
 data Val = IntVal Integer | DubVal Double
   deriving Eq
@@ -14,7 +14,7 @@ instance Show Val where
     DubVal d -> show d
 
 evalExpr :: String -> Val
-evalExpr = evaluate . parseExpr . tokenizeExpr
+evalExpr s = evaluate $ parse s expression
 
 evalExprDub :: String -> Double
 evalExprDub s = case evalExpr s of

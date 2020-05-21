@@ -2,6 +2,7 @@ module Parser where
 
 import Grammar
 import Lexer
+import ParserLib
 
 data Associativity = LeftA | RightA deriving (Show, Eq)
 
@@ -29,6 +30,9 @@ opArgs DivO = 1
 opArgs ModO = 1
 opArgs ExpO = 1
 opArgs NegO = 0
+
+expression :: Parser Expression
+expression = parseExpr <$> tokens
 
 parseExpr :: [Token] -> Expression
 parseExpr tokens = case parseExpr' tokens [] [] of
