@@ -1,18 +1,9 @@
-{- HLINT ignore "Use camelCase" -}
 module Lexer where
 
 import Grammar
-import Data.Char
-import Control.Applicative
+import Control.Applicative ((<|>))
 import ParserLib (Parser)
 import qualified ParserLib as P
-
-data Token = ConstI_T Integer
-           | ConstD_T Double
-           | Binop_T Binop
-           | LParen_T 
-           | RParen_T
-           deriving (Show, Eq)
 
 whiteSpace = P.whiteSpace
 

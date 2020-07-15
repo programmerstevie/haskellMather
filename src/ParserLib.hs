@@ -1,9 +1,8 @@
 {-# LANGUAGE LambdaCase #-}
-
 module ParserLib where
 
-import Control.Monad.State.Lazy (StateT(StateT), runStateT)
-import Control.Monad (MonadPlus, mzero, mplus, liftM, ap, void)
+import Control.Monad.State.Lazy (StateT(..), runStateT)
+import Control.Monad (MonadPlus, mzero, mplus, void)
 import Control.Applicative (Alternative, empty, (<|>))
 import Data.Foldable (asum)
 import Data.Char (isDigit)
@@ -11,13 +10,8 @@ import Data.List (concatMap)
 
 newtype Parser a = Parser {unParse :: StateT String [] a}
 
-instance Functor Parser where
-  fmap = liftM
-
-instance Applicative Parser where
-  pure = return
-  (<*>) = ap
-
+instance Functor Parser
+instance Applicative Parser
 instance Monad Parser where
   return  = Parser . return
   p >>= f = Parser $ unParse p >>= (unParse . f)
@@ -33,12 +27,17 @@ instance MonadPlus Parser where
   mzero = parserT $ const []
   mplus p q = parserT $ \s -> runParser p s ++ runParser q s
 
+
+
 parse :: String -> Parser a -> a
 parse s p
   | null ls        = error "Nothing Read"
   | null (tail ls) = fst . head $ ls
   | otherwise      = error "Multiple Parses!"
     where ls = runParser p s
+
+runParser :: Parser a -> String -> [(a, String)]
+runParser = runStateT . unParse
 
 many :: Parser a -> Parser [a]
 many p = manyV
@@ -49,9 +48,6 @@ some :: Parser a -> Parser [a]
 some p = someV
   where manyV = someV <|> return []
         someV = (:) <$> p <*> manyV
-
-runParser :: Parser a -> String -> [(a, String)]
-runParser = runStateT . unParse
 
 oneOf :: String -> Parser Char
 oneOf cs = asum $ map char cs

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d599b3852f4d0f366468429b354abf73da911e43fbbc98dc46fdc52271aeb96f
+-- hash: c13827a3af2c5b29ac6c0efef7a25da4a7a15a38c49815446e87af7059f60b6b
 
 name:           mather
 version:        0.1.0.0
@@ -28,10 +28,12 @@ source-repository head
 library
   exposed-modules:
       Evaluator
+      Expression
       Grammar
       Lexer
       Parser
       ParserLib
+      Token
   other-modules:
       Paths_mather
   hs-source-dirs:

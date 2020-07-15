@@ -6,3 +6,4 @@ main :: IO ()
 main = do
   msg <- getLine
   print $ evalExprInt msg
+
