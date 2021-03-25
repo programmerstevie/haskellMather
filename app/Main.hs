@@ -5,5 +5,4 @@ import Evaluator
 main :: IO ()
 main = do
   msg <- getLine
-  print $ evalExprInt msg
-
+  print $ evalExpr msg
