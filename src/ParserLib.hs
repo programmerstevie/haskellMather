@@ -1,19 +1,23 @@
 {-# LANGUAGE LambdaCase #-}
 module ParserLib where
 
-import Control.Monad.State.Lazy (StateT(..), runStateT)
-import Control.Monad (MonadPlus, mzero, mplus, void)
-import Control.Applicative (Alternative, empty, (<|>))
+import Control.Applicative (Alternative, empty, liftA, (<|>))
+import Control.Monad (MonadPlus, ap, mplus, mzero, void)
 import Data.Foldable (asum)
 import Data.Char (isDigit)
 import Data.List (concatMap)
 
 newtype Parser a = Parser {unParse :: StateT String [] a}
 
-instance Functor Parser
-instance Applicative Parser
+instance Functor Parser where
+  fmap = liftA
+
+instance Applicative Parser where
+  pure = return
+  (<*>) = ap
+
 instance Monad Parser where
-  return  = Parser . return
+  return = Parser . return
   p >>= f = Parser $ unParse p >>= (unParse . f)
 
 instance Alternative Parser where
