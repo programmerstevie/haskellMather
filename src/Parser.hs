@@ -2,13 +2,14 @@ module Parser where
 
 import Grammar
 import Control.Applicative ((<|>))
-import Lexer (char, Token(..), integer, double)
+import Lexer (char, integer, double)
+import Token (Token(..))
 import ParserLib (Parser, many)
-import Expression (parseExpr)
+import Expression (getExpr)
 
 
 expression :: Parser Expression
-expression = parseExpr <$> tokens
+expression = getExpr <$> tokens
 
 token :: Parser Token
 token =  (double >>= \d -> return (ConstD_T d))
