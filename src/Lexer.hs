@@ -1,7 +1,7 @@
 module Lexer where
 
-import Grammar
 import Control.Applicative ((<|>))
+import Grammar
 import ParserLib (Parser)
 import qualified ParserLib as P
 

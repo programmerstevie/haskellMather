@@ -1,19 +1,25 @@
 {-# LANGUAGE LambdaCase #-}
+
 module ParserLib where
 
-import Control.Monad.State.Lazy (StateT(..), runStateT)
-import Control.Monad (MonadPlus, mzero, mplus, void)
-import Control.Applicative (Alternative, empty, (<|>))
-import Data.Foldable (asum)
+import Control.Applicative (Alternative, empty, liftA, (<|>))
+import Control.Monad (MonadPlus, ap, mplus, mzero, void)
+import Control.Monad.State.Lazy (StateT (..), runStateT)
 import Data.Char (isDigit)
+import Data.Foldable (asum)
 import Data.List (concatMap)
 
 newtype Parser a = Parser {unParse :: StateT String [] a}
 
-instance Functor Parser
-instance Applicative Parser
+instance Functor Parser where
+  fmap = liftA
+
+instance Applicative Parser where
+  pure = return
+  (<*>) = ap
+
 instance Monad Parser where
-  return  = Parser . return
+  return = Parser . return
   p >>= f = Parser $ unParse p >>= (unParse . f)
 
 instance Alternative Parser where
@@ -27,27 +33,28 @@ instance MonadPlus Parser where
   mzero = parserT $ const []
   mplus p q = parserT $ \s -> runParser p s ++ runParser q s
 
-
-
 parse :: String -> Parser a -> a
 parse s p
-  | null ls        = error "Nothing Read"
+  | null ls = error "Nothing Read"
   | null (tail ls) = fst . head $ ls
-  | otherwise      = error "Multiple Parses!"
-    where ls = runParser p s
+  | otherwise = error "Multiple Parses!"
+  where
+    ls = runParser p s
 
 runParser :: Parser a -> String -> [(a, String)]
 runParser = runStateT . unParse
 
 many :: Parser a -> Parser [a]
 many p = manyV
-  where manyV = someV <|> return []
-        someV = (:) <$> p <*> manyV
+  where
+    manyV = someV <|> return []
+    someV = (:) <$> p <*> manyV
 
 some :: Parser a -> Parser [a]
 some p = someV
-  where manyV = someV <|> return []
-        someV = (:) <$> p <*> manyV
+  where
+    manyV = someV <|> return []
+    someV = (:) <$> p <*> manyV
 
 oneOf :: String -> Parser Char
 oneOf cs = asum $ map char cs
@@ -59,14 +66,14 @@ item :: Parser Char
 item = parserT $
   \case
     "" -> []
-    (c:cs) -> [(c, cs)]
+    (c : cs) -> [(c, cs)]
 
 predP :: (Char -> Bool) -> Parser Char
 predP pred = do
   c <- item
   if pred c
-  then return c
-  else empty
+    then return c
+    else empty
 
 digit :: Parser Char
 digit = predP isDigit
