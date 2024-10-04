@@ -1,5 +1,5 @@
 
-# Haskell Expression Parser and Evaluator
+# Haskell Mathematical Expression Parser and Evaluator
 
 This project is a Haskell implementation of a mathematical expression parser and evaluator. The parser takes an input string representing a mathematical expression, tokenizes it into meaningful tokens (numbers, operators, parentheses), parses it into an abstract syntax tree (AST), and evaluates the result. It supports basic arithmetic operations and can be extended with additional functionality as needed.
 
